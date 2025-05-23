@@ -1,0 +1,55 @@
+
+/* Animations and special effects for P5 Invitation */
+
+.parallax-bg {
+  background-attachment: fixed;
+  transform: translateZ(0);
+}
+
+.parallax-slow {
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.parallax-slow:hover {
+  transform: translateY(-5px);
+}
+
+.fade-in {
+  animation: fadeInAnimation 1s ease forwards;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.visible {
+  opacity: 1;
+}
+
+.animate-on-scroll {
+  opacity: 0;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateY(30px);
+}
+
+.animate-on-scroll.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Smooth scrolling for the page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced shadows */
+.enhanced-shadow {
+  box-shadow: 0 10px 30px rgba(128, 0, 0, 0.25);
+}

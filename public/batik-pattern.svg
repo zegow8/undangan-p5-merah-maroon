@@ -1,0 +1,12 @@
+
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="batikPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M25,0 C25,13.8 13.8,25 0,25 C13.8,25 25,36.2 25,50 C25,36.2 36.2,25 50,25 C36.2,25 25,13.8 25,0" fill="none" stroke="#800000" stroke-width="1"/>
+      <path d="M75,0 C75,13.8 63.8,25 50,25 C63.8,25 75,36.2 75,50 C75,36.2 86.2,25 100,25 C86.2,25 75,13.8 75,0" fill="none" stroke="#800000" stroke-width="1"/>
+      <path d="M25,50 C25,63.8 13.8,75 0,75 C13.8,75 25,86.2 25,100 C25,86.2 36.2,75 50,75 C36.2,75 25,63.8 25,50" fill="none" stroke="#800000" stroke-width="1"/>
+      <path d="M75,50 C75,63.8 63.8,75 50,75 C63.8,75 75,86.2 75,100 C75,86.2 86.2,75 100,75 C86.2,75 75,63.8 75,50" fill="none" stroke="#800000" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#batikPattern)"/>
+</svg>

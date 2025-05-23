@@ -79,7 +79,7 @@ const Index = () => {
       if (isMusicPlaying) {
         audioRef.current.pause();
       } else {
-        audioRef.current.play();
+        audioRef.current.play().catch(e => console.log("Autoplay prevented:", e));
       }
       setIsMusicPlaying(!isMusicPlaying);
     }
@@ -97,7 +97,8 @@ const Index = () => {
     }
     
     setIsRSVPSubmitted(true);
-    if (audioRef.current && !isMusicPlaying) {
+    // Try to play music when form is submitted
+    if (audioRef.current) {
       audioRef.current.play().catch(e => console.log("Autoplay prevented:", e));
       setIsMusicPlaying(true);
     }
@@ -140,7 +141,7 @@ const Index = () => {
       
       {/* Music player button */}
       <button 
-        className="fixed top-6 right-6 z-50 p-3 rounded-full bg-[#800000] shadow-lg hover:bg-[#600000] transition-all"
+        className="fixed top-6 right-6 z-50 p-3 rounded-full bg-[#800000] shadow-lg hover:bg-[#600000] transition-all pulse-btn"
         onClick={toggleMusic}
         aria-label={isMusicPlaying ? "Matikan musik" : "Putar musik"}
       >
@@ -156,7 +157,7 @@ const Index = () => {
               <span className="block mt-2">SMKN 21 Jakarta</span>
             </div>
             
-            <Card className="w-full max-w-md border-0 rounded-2xl shadow-[0_10px_30px_rgba(128,0,0,0.25)] backdrop-blur-sm bg-white/90">
+            <Card className="w-full max-w-md border-0 rounded-2xl enhanced-shadow backdrop-blur-sm bg-white/90 hover-card">
               <CardContent className="pt-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="text-center mb-6">
@@ -214,7 +215,7 @@ const Index = () => {
 
           {/* Countdown Timer */}
           <section className="mb-20 animate-on-scroll opacity-0">
-            <div className="rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(128,0,0,0.25)] bg-gradient-to-br from-[#800000] to-[#5a0000] p-1">
+            <div className="rounded-2xl overflow-hidden shadow-[0_15px_40px_rgba(128,0,0,0.35)] bg-gradient-to-br from-[#800000] to-[#5a0000] p-1 hover-card">
               <div className="rounded-xl bg-white/95 p-8">
                 <h2 className="text-2xl font-bold text-center text-[#800000] mb-6">Acara Akan Dimulai</h2>
                 <div className="grid grid-cols-4 gap-4 max-w-2xl mx-auto">
@@ -242,7 +243,7 @@ const Index = () => {
           {/* Event Details */}
           <section className="mb-20 grid md:grid-cols-2 gap-8">
             <div className="animate-on-scroll opacity-0">
-              <Card className="h-full border-0 rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(128,0,0,0.25)] backdrop-blur-sm bg-white/90">
+              <Card className="h-full border-0 rounded-2xl overflow-hidden enhanced-shadow backdrop-blur-sm bg-white/90 hover-card">
                 <CardContent className="p-0">
                   <div className="p-6">
                     <h2 className="text-2xl font-bold text-[#800000] mb-6">Informasi Acara</h2>
@@ -296,7 +297,7 @@ const Index = () => {
             </div>
             
             <div className="animate-on-scroll opacity-0">
-              <Card className="h-full border-0 rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(128,0,0,0.25)] backdrop-blur-sm bg-white/90">
+              <Card className="h-full border-0 rounded-2xl overflow-hidden enhanced-shadow backdrop-blur-sm bg-white/90 hover-card">
                 <CardContent className="p-0">
                   <div className="bg-[#800000] p-6">
                     <h2 className="text-2xl font-bold text-white mb-2">Lokasi</h2>
@@ -322,7 +323,7 @@ const Index = () => {
 
           {/* Rundown */}
           <section className="mb-20 animate-on-scroll opacity-0">
-            <Card className="border-0 rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(128,0,0,0.25)] backdrop-blur-sm bg-white/90">
+            <Card className="border-0 rounded-2xl overflow-hidden enhanced-shadow backdrop-blur-sm bg-white/90 hover-card">
               <CardContent className="p-6 overflow-x-auto">
                 <h2 className="text-2xl font-bold text-[#800000] mb-6">Rundown Acara</h2>
                 <table className="w-full min-w-[800px] border-collapse">
@@ -359,7 +360,7 @@ const Index = () => {
             <h2 className="text-2xl font-bold text-center text-[#800000] mb-8">Galeri Dokumentasi</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {galleryImages.map((image, index) => (
-                <div key={index} className="rounded-2xl overflow-hidden shadow-[0_10px_30px_rgba(128,0,0,0.15)] transform transition-transform hover:scale-[1.02] hover:shadow-[0_15px_35px_rgba(128,0,0,0.25)]">
+                <div key={index} className="rounded-2xl overflow-hidden enhanced-shadow transform transition-transform hover:scale-[1.05] hover:shadow-[0_20px_50px_rgba(128,0,0,0.4)]">
                   <AspectRatio ratio={16/9}>
                     <img 
                       src={image} 

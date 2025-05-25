@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -128,10 +127,10 @@ const Index = () => {
   ];
 
   const galleryImages = [
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg"
+    "/lovable-uploads/ab32a466-386c-44a9-afb4-6dbcb360f6b8.png",
+    "/lovable-uploads/ff618e06-aa6c-48dc-8415-103bca71af41.png",
+    "/lovable-uploads/8c185fe0-11f1-470e-9669-f3c4eb765434.png",
+    "/lovable-uploads/cb3de004-ad31-4aa8-a8a3-d9abfe8044da.png"
   ];
 
   return (

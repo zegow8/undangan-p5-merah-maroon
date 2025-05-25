@@ -60,18 +60,22 @@ const Index = () => {
       });
     }, observerOptions);
     
-    document.querySelectorAll('.animate-on-scroll').forEach(element => {
-      observer.observe(element);
-    });
+    // Only observe elements after component mounts
+    setTimeout(() => {
+      document.querySelectorAll('.animate-on-scroll').forEach(element => {
+        observer.observe(element);
+      });
+    }, 100);
     
     return () => {
       clearInterval(timer);
+      observer.disconnect();
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.src = "";
       }
     };
-  }, []);
+  }, [isRSVPSubmitted]);
   
   const toggleMusic = () => {
     if (audioRef.current) {
@@ -138,7 +142,7 @@ const Index = () => {
       {/* Background batik pattern with parallax */}
       <div className="absolute top-0 left-0 w-full h-full bg-[url('/batik-pattern.svg')] opacity-5 parallax-bg z-0"></div>
       
-      {/* Music player button */}
+      {/* Music player button - always visible */}
       <button 
         className="fixed top-6 right-6 z-50 p-3 rounded-full bg-[#800000] shadow-lg hover:bg-[#600000] transition-all pulse-btn"
         onClick={toggleMusic}
@@ -150,7 +154,7 @@ const Index = () => {
       {!isRSVPSubmitted ? (
         /* RSVP Form Page */
         <div className="min-h-screen flex flex-col items-center justify-center p-4 relative z-10">
-          <div className="animate-on-scroll parallax-slow opacity-0">
+          <div className="animate-on-scroll parallax-slow">
             <div className="font-bold text-4xl md:text-5xl lg:text-6xl mb-8 text-center text-[#800000] drop-shadow-md">
               Undangan P5 
               <span className="block mt-2">SMKN 21 Jakarta</span>
@@ -204,7 +208,7 @@ const Index = () => {
       ) : (
         /* Main Invitation Page */
         <div className="container mx-auto px-4 py-10 relative z-10">
-          <header className="text-center mb-16 animate-on-scroll opacity-0">
+          <header className="text-center mb-16 animate-on-scroll">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-[#800000]">
               Acara P5 Kearifan Lokal
             </h1>
@@ -213,7 +217,7 @@ const Index = () => {
           </header>
 
           {/* Countdown Timer */}
-          <section className="mb-20 animate-on-scroll opacity-0">
+          <section className="mb-20 animate-on-scroll">
             <div className="rounded-2xl overflow-hidden shadow-[0_15px_40px_rgba(128,0,0,0.35)] bg-gradient-to-br from-[#800000] to-[#5a0000] p-1 hover-card">
               <div className="rounded-xl bg-white/95 p-8">
                 <h2 className="text-2xl font-bold text-center text-[#800000] mb-6">Acara Akan Dimulai</h2>
@@ -241,7 +245,7 @@ const Index = () => {
 
           {/* Event Details */}
           <section className="mb-20 grid md:grid-cols-2 gap-8">
-            <div className="animate-on-scroll opacity-0">
+            <div className="animate-on-scroll">
               <Card className="h-full border-0 rounded-2xl overflow-hidden enhanced-shadow backdrop-blur-sm bg-white/90 hover-card">
                 <CardContent className="p-0">
                   <div className="p-6">
@@ -295,7 +299,7 @@ const Index = () => {
               </Card>
             </div>
             
-            <div className="animate-on-scroll opacity-0">
+            <div className="animate-on-scroll">
               <Card className="h-full border-0 rounded-2xl overflow-hidden enhanced-shadow backdrop-blur-sm bg-white/90 hover-card">
                 <CardContent className="p-0">
                   <div className="bg-[#800000] p-6">
@@ -321,7 +325,7 @@ const Index = () => {
           </section>
 
           {/* Rundown */}
-          <section className="mb-20 animate-on-scroll opacity-0">
+          <section className="mb-20 animate-on-scroll">
             <Card className="border-0 rounded-2xl overflow-hidden enhanced-shadow backdrop-blur-sm bg-white/90 hover-card">
               <CardContent className="p-6 overflow-x-auto">
                 <h2 className="text-2xl font-bold text-[#800000] mb-6">Rundown Acara</h2>
@@ -355,7 +359,7 @@ const Index = () => {
           </section>
 
           {/* Gallery */}
-          <section className="mb-20 animate-on-scroll opacity-0">
+          <section className="mb-20 animate-on-scroll">
             <h2 className="text-2xl font-bold text-center text-[#800000] mb-8">Galeri Dokumentasi</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {galleryImages.map((image, index) => (
@@ -373,7 +377,7 @@ const Index = () => {
           </section>
 
           {/* Footer */}
-          <footer className="text-center py-8 animate-on-scroll opacity-0">
+          <footer className="text-center py-8 animate-on-scroll">
             <div className="w-16 h-1 bg-[#800000] mx-auto mb-6"></div>
             <p className="text-gray-600">Kami menantikan kehadiran Anda</p>
             <h2 className="text-2xl font-bold text-[#800000] mt-2">Acara P5 Kearifan Lokal</h2>

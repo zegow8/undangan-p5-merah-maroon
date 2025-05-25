@@ -117,17 +117,61 @@ const Index = () => {
   };
 
   const rundownData = [
-    { no: 1, waktu: "05.00–06.00", durasi: "1 Jam", deskripsi: "Persiapan tempat acara", area: "Lapangan & Multin" },
-    { no: 2, waktu: "06.00–06.30", durasi: "30 Menit", deskripsi: "Persiapan Panitia & MC", area: "Lapangan & Multin" },
-    { no: 3, waktu: "06.30–06.50", durasi: "20 Menit", deskripsi: "Steril Lapangan & Panitia Standby", area: "Lapangan" },
-    { no: 4, waktu: "06.50–07.20", durasi: "30 Menit", deskripsi: "Palang Pintu + Persiapan Lagu & Tarian", area: "Depan Gerbang" },
-    { no: 5, waktu: "07.20–07.30", durasi: "10 Menit", deskripsi: "Tarian Pembukaan", area: "Lapangan" },
-    { no: 6, waktu: "07.40–07.50", durasi: "10 Menit", deskripsi: "Pembukaan oleh MC", area: "Lapangan" },
-    { no: 7, waktu: "07.50–08.00", durasi: "10 Menit", deskripsi: "Arahan & Doa Pembuka oleh MC", area: "Lapangan" },
-    { no: 8, waktu: "08.00–08.02", durasi: "2 Menit", deskripsi: "Persiapan Lagu Indonesia Raya", area: "Lapangan" },
-    { no: 9, waktu: "08.02–08.12", durasi: "10 Menit", deskripsi: "Menyanyikan Lagu Indonesia Raya", area: "Lapangan" },
-    { no: 10, waktu: "08.12–08.22", durasi: "10 Menit", deskripsi: "MC Mengarahkan ke Sesi Sambutan", area: "Lapangan" },
-    // Sengaja disingkat untuk kejelasan tampilan
+    { 
+      waktu: "05.00 – 06.00", 
+      deskripsi: "Persiapan tempat dan perlengkapan", 
+      area: "📍 Lapangan & Multimedia" 
+    },
+    { 
+      waktu: "06.00 – 06.30", 
+      deskripsi: "Persiapan panitia dan MC", 
+      area: "📍 Lapangan & Multimedia" 
+    },
+    { 
+      waktu: "06.30 – 07.30", 
+      deskripsi: "Sterilisasi lokasi & Tarian Pembuka", 
+      area: "📍 Lapangan" 
+    },
+    { 
+      waktu: "07.30 – 08.42", 
+      deskripsi: "Pembukaan, doa, menyanyikan lagu Indonesia Raya, dan sambutan", 
+      area: "📍 Lapangan" 
+    },
+    { 
+      waktu: "08.42 – 08.55", 
+      deskripsi: "Sejarah Jakarta & Pembukaan Drama", 
+      area: "📍 Lapangan" 
+    },
+    { 
+      waktu: "08.55 – 09.37", 
+      deskripsi: "Pertunjukan Drama & Tarian", 
+      area: "📍 Lapangan" 
+    },
+    { 
+      waktu: "09.37 – 09.57", 
+      deskripsi: "Apresiasi & Pengarahan Fashion Show", 
+      area: "📍 Lapangan" 
+    },
+    { 
+      waktu: "09.57 – 10.27", 
+      deskripsi: "Fashion Show per kelas", 
+      area: "📍 Lapangan" 
+    },
+    { 
+      waktu: "10.27 – 10.47", 
+      deskripsi: "Penutupan, Flashmob, dan pengarahan sesi foto", 
+      area: "📍 Lapangan" 
+    },
+    { 
+      waktu: "10.47 – 11.52", 
+      deskripsi: "Sesi Foto: Kepala Sekolah, Guru, dan Kelas", 
+      area: "📍 Ruang Multimedia" 
+    },
+    { 
+      waktu: "11.52 – 12.00", 
+      deskripsi: "Pengarahan istirahat", 
+      area: "📍 Lapangan" 
+    }
   ];
 
   const galleryImages = [
@@ -328,32 +372,23 @@ const Index = () => {
           <section className="mb-20 animate-on-scroll">
             <Card className="border-0 rounded-2xl overflow-hidden enhanced-shadow backdrop-blur-sm bg-white/90 hover-card">
               <CardContent className="p-6 overflow-x-auto">
-                <h2 className="text-2xl font-bold text-[#800000] mb-6">Rundown Acara</h2>
-                <table className="w-full min-w-[800px] border-collapse">
-                  <thead>
-                    <tr className="bg-[#800000] text-white">
-                      <th className="p-3 text-left rounded-tl-xl">No</th>
-                      <th className="p-3 text-left">Waktu</th>
-                      <th className="p-3 text-left">Durasi</th>
-                      <th className="p-3 text-left">Deskripsi Kegiatan</th>
-                      <th className="p-3 text-left rounded-tr-xl">Area</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rundownData.map((item, index) => (
-                      <tr 
-                        key={item.no} 
-                        className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-[#fff0f0] transition-colors`}
-                      >
-                        <td className="p-3 border-t border-gray-200">{item.no}</td>
-                        <td className="p-3 border-t border-gray-200">{item.waktu}</td>
-                        <td className="p-3 border-t border-gray-200">{item.durasi}</td>
-                        <td className="p-3 border-t border-gray-200">{item.deskripsi}</td>
-                        <td className="p-3 border-t border-gray-200">{item.area}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <h2 className="text-2xl font-bold text-[#800000] mb-6 flex items-center">
+                  🗓 Rundown Acara Kegiatan
+                </h2>
+                <div className="space-y-4">
+                  {rundownData.map((item, index) => (
+                    <div 
+                      key={index} 
+                      className="bg-white rounded-xl p-4 border border-gray-100 hover:shadow-lg transition-all duration-300 hover:border-[#800000]/20"
+                    >
+                      <div className="flex flex-col space-y-2">
+                        <div className="font-bold text-[#800000] text-lg">{item.waktu}</div>
+                        <div className="text-gray-800 font-medium">{item.deskripsi}</div>
+                        <div className="text-gray-600 text-sm">{item.area}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </section>

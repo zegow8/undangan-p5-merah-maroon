@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,9 +22,33 @@ const Index = () => {
   });
 
   useEffect(() => {
-    // Initialize audio with Google Drive direct link
-    audioRef.current = new Audio("https://drive.google.com/uc?export=download&id=1GFgy-A2CG1qXnGZxORUtCZt8v1qJNrzx");
+    // Initialize audio with console debugging
+    console.log("Initializing audio...");
+    audioRef.current = new Audio();
+    audioRef.current.crossOrigin = "anonymous";
+    audioRef.current.preload = "auto";
     audioRef.current.loop = true;
+    
+    // Try multiple sources
+    const audioSources = [
+      "https://drive.google.com/uc?export=download&id=1GFgy-A2CG1qXnGZxORUtCZt8v1qJNrzx",
+      "https://docs.google.com/uc?export=download&id=1GFgy-A2CG1qXnGZxORUtCZt8v1qJNrzx",
+      "https://drive.usercontent.google.com/download?id=1GFgy-A2CG1qXnGZxORUtCZt8v1qJNrzx&export=download"
+    ];
+    
+    audioRef.current.src = audioSources[0];
+    
+    // Add event listeners for debugging
+    audioRef.current.addEventListener('loadstart', () => console.log('Audio: Load start'));
+    audioRef.current.addEventListener('loadeddata', () => console.log('Audio: Data loaded'));
+    audioRef.current.addEventListener('canplay', () => console.log('Audio: Can play'));
+    audioRef.current.addEventListener('error', (e) => {
+      console.error('Audio error:', e);
+      console.log('Trying alternative source...');
+      if (audioRef.current) {
+        audioRef.current.src = audioSources[1];
+      }
+    });
     
     // Countdown timer
     const timer = setInterval(() => {
@@ -79,13 +102,29 @@ const Index = () => {
   }, [isRSVPSubmitted]);
   
   const toggleMusic = () => {
+    console.log("Toggle music clicked, current state:", isMusicPlaying);
     if (audioRef.current) {
       if (isMusicPlaying) {
         audioRef.current.pause();
+        console.log("Music paused");
       } else {
-        audioRef.current.play().catch(e => console.log("Autoplay prevented:", e));
+        console.log("Attempting to play music...");
+        audioRef.current.play()
+          .then(() => {
+            console.log("Music started playing successfully");
+          })
+          .catch(e => {
+            console.error("Failed to play music:", e);
+            toast({
+              title: "Audio Error",
+              description: "Tidak dapat memutar musik. Coba klik tombol musik lagi.",
+              variant: "destructive",
+            });
+          });
       }
       setIsMusicPlaying(!isMusicPlaying);
+    } else {
+      console.error("Audio ref is null");
     }
   };
 

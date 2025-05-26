@@ -22,21 +22,11 @@ const Index = () => {
   });
 
   useEffect(() => {
-    // Initialize audio with console debugging
+    // Initialize audio with local file
     console.log("Initializing audio...");
-    audioRef.current = new Audio();
-    audioRef.current.crossOrigin = "anonymous";
-    audioRef.current.preload = "auto";
+    audioRef.current = new Audio("/yayaw.mp3");
     audioRef.current.loop = true;
-    
-    // Try multiple sources
-    const audioSources = [
-      "https://drive.google.com/uc?export=download&id=1GFgy-A2CG1qXnGZxORUtCZt8v1qJNrzx",
-      "https://docs.google.com/uc?export=download&id=1GFgy-A2CG1qXnGZxORUtCZt8v1qJNrzx",
-      "https://drive.usercontent.google.com/download?id=1GFgy-A2CG1qXnGZxORUtCZt8v1qJNrzx&export=download"
-    ];
-    
-    audioRef.current.src = audioSources[0];
+    audioRef.current.preload = "auto";
     
     // Add event listeners for debugging
     audioRef.current.addEventListener('loadstart', () => console.log('Audio: Load start'));
@@ -44,10 +34,6 @@ const Index = () => {
     audioRef.current.addEventListener('canplay', () => console.log('Audio: Can play'));
     audioRef.current.addEventListener('error', (e) => {
       console.error('Audio error:', e);
-      console.log('Trying alternative source...');
-      if (audioRef.current) {
-        audioRef.current.src = audioSources[1];
-      }
     });
     
     // Countdown timer

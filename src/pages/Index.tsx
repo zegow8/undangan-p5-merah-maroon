@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,8 +23,8 @@ const Index = () => {
   });
 
   useEffect(() => {
-    // Initialize audio
-    audioRef.current = new Audio("/yayaw.mp3");
+    // Initialize audio with Google Drive direct link
+    audioRef.current = new Audio("https://drive.google.com/uc?export=download&id=1GFgy-A2CG1qXnGZxORUtCZt8v1qJNrzx");
     audioRef.current.loop = true;
     
     // Countdown timer

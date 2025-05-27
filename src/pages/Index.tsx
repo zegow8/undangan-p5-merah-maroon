@@ -12,7 +12,10 @@ const Index = () => {
   const [name, setName] = useState("");
   const [attendees, setAttendees] = useState("");
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const oscillatorRef = useRef<OscillatorNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const eventDate = new Date("May 28, 2025 07:00:00").getTime();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -22,26 +25,8 @@ const Index = () => {
   });
 
   useEffect(() => {
-    // Initialize audio with online traditional Indonesian music
-    console.log("Initializing audio...");
-    // Using a traditional Indonesian music from online source
-    audioRef.current = new Audio("https://www.soundjay.com/misc/sounds/gamelan-1.mp3");
-    audioRef.current.loop = true;
-    audioRef.current.preload = "auto";
-    audioRef.current.volume = 0.5; // Set moderate volume
-    
-    // Add event listeners for debugging
-    audioRef.current.addEventListener('loadstart', () => console.log('Audio: Load start'));
-    audioRef.current.addEventListener('loadeddata', () => console.log('Audio: Data loaded'));
-    audioRef.current.addEventListener('canplay', () => console.log('Audio: Can play'));
-    audioRef.current.addEventListener('error', (e) => {
-      console.error('Audio error:', e);
-      // Fallback to alternative source
-      if (audioRef.current) {
-        audioRef.current.src = "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e1/Gamelan_performance.ogg/Gamelan_performance.ogg.mp3";
-        console.log("Trying fallback audio source...");
-      }
-    });
+    // Initialize Web Audio API for traditional Indonesian-style music
+    console.log("Initializing Web Audio API...");
     
     // Countdown timer
     const timer = setInterval(() => {
@@ -87,46 +72,93 @@ const Index = () => {
     return () => {
       clearInterval(timer);
       observer.disconnect();
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.src = "";
-      }
+      stopMusic();
     };
   }, [isRSVPSubmitted]);
+
+  const playTraditionalMelody = () => {
+    try {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      const audioContext = audioContextRef.current;
+      
+      // Traditional Indonesian pentatonic scale frequencies (approximate gamelan tuning)
+      const gamelanNotes = [220, 247, 293, 330, 370, 440, 494, 587]; // A3 to D5 in pentatonic
+      let noteIndex = 0;
+      
+      const playNote = () => {
+        if (!audioContext || !isMusicPlaying) return;
+        
+        // Create oscillator
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        // Connect nodes
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Set frequency from gamelan scale
+        oscillator.frequency.setValueAtTime(gamelanNotes[noteIndex], audioContext.currentTime);
+        oscillator.type = 'sine'; // Soft sine wave for traditional sound
+        
+        // Set volume envelope (like traditional gong/gamelan decay)
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+        
+        // Start and stop note
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 2);
+        
+        // Move to next note in sequence
+        noteIndex = (noteIndex + 1) % gamelanNotes.length;
+      };
+      
+      // Play first note
+      playNote();
+      
+      // Continue playing notes in sequence
+      intervalRef.current = setInterval(playNote, 2500); // Every 2.5 seconds
+      
+    } catch (error) {
+      console.error("Web Audio API error:", error);
+      toast({
+        title: "Audio Error",
+        description: "Browser tidak mendukung Web Audio API",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopMusic = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+  };
   
   const toggleMusic = () => {
     console.log("Toggle music clicked, current state:", isMusicPlaying);
-    if (audioRef.current) {
-      if (isMusicPlaying) {
-        audioRef.current.pause();
-        console.log("Music paused");
-        toast({
-          title: "Musik Dijeda",
-          description: "Musik tradisional dijeda",
-        });
-      } else {
-        console.log("Attempting to play music...");
-        audioRef.current.play()
-          .then(() => {
-            console.log("Music started playing successfully");
-            toast({
-              title: "Musik Dimulai",
-              description: "Musik tradisional Indonesia sedang diputar",
-            });
-          })
-          .catch(e => {
-            console.error("Failed to play music:", e);
-            toast({
-              title: "Audio Error",
-              description: "Tidak dapat memutar musik. Browser mungkin memblokir autoplay.",
-              variant: "destructive",
-            });
-          });
-      }
-      setIsMusicPlaying(!isMusicPlaying);
+    
+    if (isMusicPlaying) {
+      stopMusic();
+      console.log("Music stopped");
+      toast({
+        title: "Musik Dijeda",
+        description: "Musik tradisional dijeda",
+      });
     } else {
-      console.error("Audio ref is null");
+      console.log("Starting traditional melody...");
+      playTraditionalMelody();
+      toast({
+        title: "Musik Dimulai",
+        description: "Melodi tradisional Indonesia sedang diputar",
+      });
     }
+    setIsMusicPlaying(!isMusicPlaying);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -141,11 +173,6 @@ const Index = () => {
     }
     
     setIsRSVPSubmitted(true);
-    // Try to play music when form is submitted
-    if (audioRef.current) {
-      audioRef.current.play().catch(e => console.log("Autoplay prevented:", e));
-      setIsMusicPlaying(true);
-    }
     
     toast({
       title: "Selamat Datang!",

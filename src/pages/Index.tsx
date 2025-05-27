@@ -16,7 +16,7 @@ const Index = () => {
   const oscillatorRef = useRef<OscillatorNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const eventDate = new Date("May 28, 2025 07:00:00").getTime();
+  const eventDate = new Date("June 3, 2025 07:00:00").getTime();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -76,10 +76,18 @@ const Index = () => {
     };
   }, [isRSVPSubmitted]);
 
-  const playTraditionalMelody = () => {
+  const playTraditionalMelody = async () => {
     try {
-      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      // Fix TypeScript error by using proper type assertion
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      audioContextRef.current = new AudioContextClass();
       const audioContext = audioContextRef.current;
+      
+      // Resume audio context if it's suspended (browser autoplay policy)
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+        console.log("Audio context resumed");
+      }
       
       // Traditional Indonesian pentatonic scale frequencies (approximate gamelan tuning)
       const gamelanNotes = [220, 247, 293, 330, 370, 440, 494, 587]; // A3 to D5 in pentatonic
@@ -87,6 +95,8 @@ const Index = () => {
       
       const playNote = () => {
         if (!audioContext || !isMusicPlaying) return;
+        
+        console.log("Playing note:", gamelanNotes[noteIndex]);
         
         // Create oscillator
         const oscillator = audioContext.createOscillator();
@@ -100,9 +110,9 @@ const Index = () => {
         oscillator.frequency.setValueAtTime(gamelanNotes[noteIndex], audioContext.currentTime);
         oscillator.type = 'sine'; // Soft sine wave for traditional sound
         
-        // Set volume envelope (like traditional gong/gamelan decay)
+        // Set volume envelope (like traditional gong/gamelan decay) - increased volume
         gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-        gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
+        gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1); // Increased from 0.1
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
         
         // Start and stop note
@@ -140,7 +150,7 @@ const Index = () => {
     }
   };
   
-  const toggleMusic = () => {
+  const toggleMusic = async () => {
     console.log("Toggle music clicked, current state:", isMusicPlaying);
     
     if (isMusicPlaying) {
@@ -152,7 +162,7 @@ const Index = () => {
       });
     } else {
       console.log("Starting traditional melody...");
-      playTraditionalMelody();
+      await playTraditionalMelody();
       toast({
         title: "Musik Dimulai",
         description: "Melodi tradisional Indonesia sedang diputar",
@@ -367,7 +377,7 @@ const Index = () => {
                         <Calendar className="w-6 h-6 mr-4 text-[#800000]" />
                         <div>
                           <div className="font-medium">Tanggal</div>
-                          <div className="text-lg">28 Mei 2025</div>
+                          <div className="text-lg">3 Juni 2025</div>
                         </div>
                       </div>
                       <div className="flex items-center">

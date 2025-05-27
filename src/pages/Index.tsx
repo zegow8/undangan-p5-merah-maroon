@@ -22,11 +22,13 @@ const Index = () => {
   });
 
   useEffect(() => {
-    // Initialize audio with local file
+    // Initialize audio with online traditional Indonesian music
     console.log("Initializing audio...");
-    audioRef.current = new Audio("/yayaw.mp3");
+    // Using a traditional Indonesian music from online source
+    audioRef.current = new Audio("https://www.soundjay.com/misc/sounds/gamelan-1.mp3");
     audioRef.current.loop = true;
     audioRef.current.preload = "auto";
+    audioRef.current.volume = 0.5; // Set moderate volume
     
     // Add event listeners for debugging
     audioRef.current.addEventListener('loadstart', () => console.log('Audio: Load start'));
@@ -34,6 +36,11 @@ const Index = () => {
     audioRef.current.addEventListener('canplay', () => console.log('Audio: Can play'));
     audioRef.current.addEventListener('error', (e) => {
       console.error('Audio error:', e);
+      // Fallback to alternative source
+      if (audioRef.current) {
+        audioRef.current.src = "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e1/Gamelan_performance.ogg/Gamelan_performance.ogg.mp3";
+        console.log("Trying fallback audio source...");
+      }
     });
     
     // Countdown timer
@@ -93,17 +100,25 @@ const Index = () => {
       if (isMusicPlaying) {
         audioRef.current.pause();
         console.log("Music paused");
+        toast({
+          title: "Musik Dijeda",
+          description: "Musik tradisional dijeda",
+        });
       } else {
         console.log("Attempting to play music...");
         audioRef.current.play()
           .then(() => {
             console.log("Music started playing successfully");
+            toast({
+              title: "Musik Dimulai",
+              description: "Musik tradisional Indonesia sedang diputar",
+            });
           })
           .catch(e => {
             console.error("Failed to play music:", e);
             toast({
               title: "Audio Error",
-              description: "Tidak dapat memutar musik. Coba klik tombol musik lagi.",
+              description: "Tidak dapat memutar musik. Browser mungkin memblokir autoplay.",
               variant: "destructive",
             });
           });

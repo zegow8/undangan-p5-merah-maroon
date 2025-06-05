@@ -94,6 +94,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Start countdown timer
     startCountdown();
+    
+    // Set initial music button state
+    updateMusicButton();
 });
 
 function setupEventListeners() {
@@ -144,21 +147,28 @@ function toggleMusic() {
     
     if (isMusicPlaying) {
         backgroundMusic.pause();
-        // Change icon to music note
-        musicIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"></path>`;
-        showToast('Musik Dijeda', 'Musik tradisional dijeda', 'info');
         isMusicPlaying = false;
+        showToast('Musik Dijeda', 'Musik dijeda', 'info');
     } else {
-        // Request permission for audio
         backgroundMusic.play().then(() => {
-            // Change icon to volume off
-            musicIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>`;
-            showToast('Musik Dimulai', 'Musik "Kita" sedang diputar', 'success');
             isMusicPlaying = true;
+            showToast('Musik Dimulai', 'Musik sedang diputar', 'success');
         }).catch((error) => {
             console.error('Audio play failed:', error);
-            showToast('Audio Error', 'Browser tidak dapat memutar audio. Silakan klik untuk mengizinkan.', 'error');
+            showToast('Audio Error', 'Tidak dapat memutar musik. Pastikan file yayaw.mp3 ada di folder yang sama.', 'error');
         });
+    }
+    
+    updateMusicButton();
+}
+
+function updateMusicButton() {
+    if (isMusicPlaying) {
+        // Change icon to pause
+        musicIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>`;
+    } else {
+        // Change icon to play
+        musicIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m-9 4h10a3 3 0 003-3V7a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12l4-2v4l-4-2z"></path>`;
     }
 }
 
@@ -252,10 +262,20 @@ function initializeAnimations() {
     }, 100);
 }
 
-// Handle audio autoplay policy
-document.addEventListener('click', function() {
-    // This helps with browsers that require user interaction before playing audio
-    if (backgroundMusic.paused && isMusicPlaying) {
-        backgroundMusic.play().catch(console.error);
-    }
-}, { once: true });
+// Handle music ended event
+backgroundMusic.addEventListener('ended', function() {
+    isMusicPlaying = false;
+    updateMusicButton();
+});
+
+// Handle music pause event
+backgroundMusic.addEventListener('pause', function() {
+    isMusicPlaying = false;
+    updateMusicButton();
+});
+
+// Handle music play event
+backgroundMusic.addEventListener('play', function() {
+    isMusicPlaying = true;
+    updateMusicButton();
+});
